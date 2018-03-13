@@ -1,41 +1,45 @@
 
 $(document).ready(function() {
  
-    var city = localStorage.getItem("city"); //on récupere la variable localStorage ayant pour clé city, puis on la met dans une variable
-    var cardSelector = $("#card"); //on met notre sélecteur dans une variable
+    var city = localStorage.getItem("city"); //récupere la variable localStorage ayant pour clé city
+    var cardSelector = $("#card"); //met notre sélecteur dans une variable
    
-    function getWeather() { // on crée une fonction qui récupere la météo avec les instructions suivantes
-      if (city == null) { // on teste si la variable city est nulle
-        cardSelector.append("<p>Vous n'avez pas encore renseign&eacute; de ville.</p>"); // on affiche un message dans la card
+    function getWeather() { // crée une fonction qui récupere la météo 
+      if (city == null) { // teste si la variable city est nulle
+        cardSelector.append("<p>Vous n'avez pas encore renseigné de ville.</p>"); // affiche un message dans la card
       } else { 
         $("#card *:not(div)").remove();
    
-        var myAPPID = "c951c66741738c77617092b4e4bf769c"; //ici on déclare notre APPID pour OpenWeatherMap   
+        var myAPPID = "c951c66741738c77617092b4e4bf769c"; //APPID pour OpenWeatherMap   
        
-        $.getJSON("http://api.openweathermap.org/data/2.5/weather?APPID=" + myAPPID + "&q=" + city +"&lang=fr", function(result) { // on met le résultat dans une variable result qui vaut le code JSON qu'on voit dans le navigateur
-          var cityName = result.name; 
-          var weatherType = result.weather[0].description; // la description du temps est dans le tableau weather (un tableau est défini par des []), on vise le premier, puis on prend la valeur de main
-          var iconCode = result.weather[0].icon; // Meme chose qu'au dessus sauf qu'on prend la valeur de icon
-          var temp = result.main.temp; // cette fois ci on va dans main qui n'est pas un tableau donc pas de '[]', on va de main a temp sans souci
-          var tempInCelsius = (temp - 273.15).toFixed(1); // notre temperature est en Kelvin donc on effectue notre soustration pour l'avoir en Celsius, puis le toFixed permet d'arrondir une valeur, le 1 correspond à un chiffre apres la virgule
+        $.getJSON("http://api.openweathermap.org/data/2.5/weather?APPID=" + myAPPID + "&q=" + city +"&lang=fr&units=metric", function(result) { // met le résultat dans une variable result qui vaut le code JSON qu'on voit dans le navigateur
+          var cityName = result.name.toUpperCase(); 
+          var weatherType = result.weather[0].description; 
+          var iconCode = result.weather[0].icon;
+          var temp = result.main.temp; 
+          var tempInCelsius = (temp).toFixed(1); // toFixed permet d'arrondir une valeur, le 1 correspond à un chiffre apres la virgule
+          var date = new Date(result.dt*1000); // multiplié par 1000 pour avoir le timestamp en millisecondes et pas en secondes
+          var hours = date.getHours();
+          var minutes = "0" + date.getMinutes();
    
-          // ici on remplit la card avec nos valeurs, premierement la liste d'information, puis ensuite on affiche l'image avec le code icone
-          cardSelector.append("<ul><li>Ville : " + cityName + "</li><li>Météo : " + weatherType + "</li><li> Température : " + tempInCelsius + " &deg;C</li></ul>");
+          // remplit la card avec nos valeurs : la liste d'information, puis l'image avec le code icone
+          cardSelector.append("<ul><li class='weatherTime'>Météo à "+hours+":"+minutes.substr(-2)+"</li><li class='cityName'>" + cityName + "</li><li>" + weatherType + "</li><li>" + tempInCelsius + " &deg;C</li></ul>");
           cardSelector.append("<img src='img/" + iconCode + ".png' alt='Weather Icon' width='80px' height='80px'>");
+          cardSelector.append("<a class='waves-effect waves-light btn teal-text teal lighten-5'>Plus</a>");
    
           // l'utilisateur voit les informations météo de sa ville
         });
       }
     }
    
-    function submitForm() { // on crée une fonction qui récupere la valeur du formulaire
-      var mycity = $('input').val(); // on récupere la valeur de notre input avec .val() et on la mets dans une variable
-      if (mycity.length >= 3) { // si la variable donc la ville de l'utilisateur est plus grande ou egale que 3 caracteres alors ...
-        localStorage.setItem("city", mycity); // on crée une variable localStorage, avec pour clé city et comme valeur la ville de l'utilisateur
-        city = mycity; // on donne la ville à la variable city qui est utilisée dans la fonction getWeather
-        getWeather(); // on appelle la fonction getWeather pour récuperer la météo de cette ville, ville qui est stockée dans la variable city
-      } else { // si le champs fait 2 caracteres ou moins on ...
-        alert('empty field'); // affiche une erreur
+    function submitForm() { // crée une fonction qui récupere la valeur du formulaire
+      var mycity = $('input').val(); // récupere la valeur de notre input avec .val()
+      if (mycity.length >= 3) { // si la variable est plus grande ou egale que 3 caracteres alors ...
+        localStorage.setItem("city", mycity); //  crée une variable localStorage, avec pour clé city et comme valeur la ville de l'utilisateur
+        city = mycity; // donne la ville à la variable city qui est utilisée dans la fonction getWeather
+        getWeather();
+      } else { // si le champ fait 2 caracteres ou moins on affiche une erreur
+        alert('Veuillez remplir ce champ !');  
       }
     }
    
@@ -43,8 +47,8 @@ $(document).ready(function() {
       submitForm(); // ... on appelle la fonction submitForm qui va traiter ce qu'il y a dans le champ de la ville
     });
    
-    $('form').submit(function(event) { // quand on soumet le formulaire, c'est à dire qu'on appuie sur la touche Entrée, alors ...
-      event.preventDefault(); // ici on annule le comportement par défault qui est de recharger la page quand on soumet un formulaire
+    $('form').submit(function(event) { // quand on soumet le formulaire, alors ...
+      event.preventDefault(); // ici on annule le comportement par défaut qui est de recharger la page quand on soumet un formulaire
       submitForm(); // ... on appelle la fonction submitForm qui va traiter ce qu'il y a dans le champ de la ville
     });
    

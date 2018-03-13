@@ -10,3 +10,15 @@ a.btn {
 .margin {
     margin: 25px 15px !important; 
 }
+#card{
+    color: white;
+}
+.weatherTime{
+    font-size: 0.8em;
+    color: #1f253d;
+}
+.cityName{
+    font-family: GillSans, Calibri, Trebuchet, sans-serif;
+    font-size: 2em;
+    font-weight: 100;
+}
