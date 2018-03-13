@@ -16,14 +16,13 @@ $(document).ready(function() {
           var cityName = result.name.toUpperCase(); 
           var weatherType = result.weather[0].description; 
           var iconCode = result.weather[0].icon;
-          var temp = result.main.temp; 
-          var tempInCelsius = (temp).toFixed(1); // toFixed permet d'arrondir une valeur, le 1 correspond à un chiffre apres la virgule
+          var temp = Math.round(result.main.temp);
           var date = new Date(result.dt*1000); // multiplié par 1000 pour avoir le timestamp en millisecondes et pas en secondes
           var hours = date.getHours();
           var minutes = "0" + date.getMinutes();
    
           // remplit la card avec nos valeurs : la liste d'information, puis l'image avec le code icone
-          cardSelector.append("<ul><li class='weatherTime'>Météo à "+hours+":"+minutes.substr(-2)+"</li><li class='cityName'>" + cityName + "</li><li>" + weatherType + "</li><li>" + tempInCelsius + " &deg;C</li></ul>");
+          cardSelector.append("<ul><li class='weatherTime'>Météo à "+hours+":"+minutes.substr(-2)+"</li><li class='cityName'>" + cityName + "</li><li>" + weatherType + "</li><li>" + temp + " &deg;C</li></ul>");
           cardSelector.append("<img src='img/" + iconCode + ".png' alt='Weather Icon' width='80px' height='80px'>");
           cardSelector.append("<a class='waves-effect waves-light btn teal-text teal lighten-5'>Plus</a>");
    
