@@ -14,6 +14,7 @@ $(document).ready(function() {
        
         $.getJSON("http://api.openweathermap.org/data/2.5/weather?APPID=" + myAPPID + "&q=" + city +"&lang=fr&units=metric", function(result) { // met le résultat dans une variable result qui vaut le code JSON qu'on voit dans le navigateur
           var cityName = result.name.toUpperCase(); 
+          var country = result.sys.country;
           var weatherType = result.weather[0].description; 
           var iconCode = result.weather[0].icon;
           var temp = Math.round(result.main.temp);
@@ -24,7 +25,7 @@ $(document).ready(function() {
           var humidity = result.main.humidity;
    
           // remplit la card avec nos valeurs : la liste d'information, puis l'image avec le code icone
-          cardSelector.append("<ul><li class='weatherTime'>Météo à "+hours+":"+minutes.substr(-2)+"</li><li class='cityName'>" + cityName + "</li><li>" + weatherType + "</li><li>" + temp + " &deg;C</li></ul>");
+          cardSelector.append("<ul><li class='weatherTime'>Météo à "+hours+":"+minutes.substr(-2)+"</li><li class='cityName'>" + cityName + ", " + country + "</li><li>" + weatherType + "</li><li>" + temp + " &deg;C</li></ul>");
           cardSelector.append("<img src='img/" + iconCode + ".png' alt='Weather Icon' width='80px' height='80px'>");
           cardSelector.append("<table class='bordered'><tr><td><img src='img/wind.png' alt'wind icon' width='30px' height='30px'></td><td>" + wind + " km/h</td></tr><tr><td><img src='img/humidity.png' alt'wind icon' width='30px' height='30px'></td><td>"+ humidity +"%</td></tr></table>");
    
